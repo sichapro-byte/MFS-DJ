@@ -1,0 +1,8 @@
+{
+  "name": "Voxel Turntable",
+  "description": "A 3D turntable made of colorful voxels, featuring an animated spinning record and auto-rotated camera via Three.js and React Three Fiber.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
