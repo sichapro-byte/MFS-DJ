@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { create } from 'zustand';
+import { Disc, Play, Upload, Music, Volume2, Sparkles, AudioWaveform } from 'lucide-react';
 
 // Store
 interface UIState {
@@ -419,8 +420,8 @@ function HUD() {
   const [songName, setSongName] = React.useState<string>("Loading track...");
 
   useEffect(() => {
-    // Fetch ENHYPEN track preview from iTunes API
-    fetch('https://itunes.apple.com/search?term=enhypen&entity=song&limit=15')
+    // Fetch a dance/DJ track preview from iTunes API
+    fetch('https://itunes.apple.com/search?term=dance+electronic&entity=song&limit=15')
       .then(res => res.json())
       .then(data => {
          if (data.results && data.results.length > 0) {
@@ -531,42 +532,98 @@ function HUD() {
        )}
 
        {!gameStarted && !gameOver && (
-          <div className="m-auto pointer-events-auto bg-zinc-900/90 text-white p-6 sm:p-12 rounded-3xl border-4 border-red-900/40 flex flex-col items-center text-center backdrop-blur-xl max-w-[90vw]">
-             <h1 className="text-4xl sm:text-6xl font-black mb-4 sm:mb-6 text-transparent bg-clip-text bg-gradient-to-br from-red-600 to-orange-500 tracking-tight leading-tight">ENHYPEN<br className="sm:hidden" /> VOXEL DJ</h1>
-             <p className="text-base sm:text-xl text-zinc-300 mb-6 sm:mb-8 max-w-md">Use <strong className="text-white bg-zinc-800 px-2 py-1 rounded mx-1">Left</strong> and <strong className="text-white bg-zinc-800 px-2 py-1 rounded mx-1">Right</strong> arrows (or tap sides of screen) to DJ. Moving the arm pans the audio and scratches the song!</p>
+          <div className="m-auto pointer-events-auto relative overflow-hidden bg-black/60 text-white p-8 sm:p-14 rounded-[2.5rem] border border-white/10 flex flex-col items-center text-center backdrop-blur-3xl max-w-xl w-full mx-4 shadow-2xl">
+             {/* Atmospheric glow */}
+             <div className="absolute top-0 -left-1/2 w-full h-full bg-gradient-to-r from-red-500/20 to-orange-500/20 blur-3xl opacity-50 rounded-full mix-blend-screen pointer-events-none"></div>
              
-             <div className="mb-6 p-4 bg-zinc-800/80 rounded-xl w-full max-w-sm border border-zinc-700">
-               <p className="text-sm font-medium text-zinc-300 mb-2">Current Track:</p>
-               <div className="text-green-400 font-bold text-sm mb-4 truncate w-full" title={songName}>{songName}</div>
-               <p className="text-xs font-medium text-zinc-500 mb-2 mt-4 uppercase tracking-wider">Or upload custom track (MP3/WAV)</p>
-               <input 
-                 type="file" 
-                 ref={fileInputRef}
-                 accept="audio/*" 
-                 onChange={handleFileChange}
-                 className="block w-full text-xs text-zinc-400 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-red-500 file:text-white hover:file:bg-red-600 focus:outline-none transition-colors"
-               />
-             </div>
+             <div className="relative z-10 flex flex-col items-center w-full">
+               <div className="w-20 h-20 mb-6 rounded-full bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-[0_0_40px_rgba(239,68,68,0.4)] relative">
+                 <Disc className="w-10 h-10 text-white animate-[spin_4s_linear_infinite]" />
+                 <div className="absolute inset-0 rounded-full border-2 border-white/20 scale-[1.2] animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+               </div>
 
-             <button onClick={handleStart} className="px-8 py-3 sm:px-10 sm:py-4 bg-white text-black text-xl sm:text-2xl font-bold rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.4)]">PLAY NOW</button>
+               <h1 className="text-4xl sm:text-6xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-br from-white to-white/70 tracking-tight leading-tight flex items-center gap-3">
+                 MFS DJ
+               </h1>
+               
+               <p className="text-base text-zinc-400 mb-8 max-w-md leading-relaxed hidden sm:block">
+                 Use <strong className="text-white">Left/Right</strong> arrows to DJ. Moving the arm pans the audio and scratches the song! Catch gold notes, dodge red noise.
+               </p>
+               
+               <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 backdrop-blur-sm transition-colors hover:bg-white/10">
+                 <div className="flex items-center gap-3 mb-3">
+                   <AudioWaveform className="w-5 h-5 text-green-400" />
+                   <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Now Playing</p>
+                 </div>
+                 <div className="flex items-center justify-between gap-4 bg-black/40 rounded-xl p-3 border border-white/5">
+                   <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0">
+                     <Music className="w-5 h-5 text-zinc-500" />
+                   </div>
+                   <div className="text-sm font-medium text-white truncate w-full text-left" title={songName}>
+                     {songName}
+                   </div>
+                 </div>
+                 
+                 <div className="mt-4 pt-4 border-t border-white/5 flex flex-col items-start w-full relative group">
+                   <div className="flex items-center gap-2 mb-2">
+                     <Upload className="w-4 h-4 text-zinc-500 group-hover:text-red-400 transition-colors" />
+                     <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider group-hover:text-red-400 transition-colors">Custom Track</p>
+                   </div>
+                   <input 
+                     type="file" 
+                     ref={fileInputRef}
+                     accept="audio/*" 
+                     onChange={handleFileChange}
+                     className="block w-full text-xs text-zinc-400 file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 focus:outline-none transition-all cursor-pointer"
+                   />
+                 </div>
+               </div>
+
+               <button 
+                 onClick={handleStart} 
+                 className="group relative w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white text-lg font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] overflow-hidden"
+               >
+                 <div className="absolute inset-0 w-full h-full bg-white/20 skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                 <span className="relative flex items-center justify-center gap-2">
+                   START PARTY <Play className="w-5 h-5 fill-current" />
+                 </span>
+               </button>
+             </div>
           </div>
        )}
 
        {gameOver && (
-          <div className="m-auto pointer-events-auto bg-zinc-900/90 text-white p-6 sm:p-12 rounded-3xl border-4 border-red-900/80 flex flex-col items-center backdrop-blur-xl max-w-[90vw]">
-             <h1 className="text-5xl sm:text-6xl font-black mb-4 text-red-500 tracking-tight text-center">GAME OVER</h1>
-             <p className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-zinc-300 text-center">Final Score: <span className="text-yellow-400">{score}</span></p>
-             <button onClick={() => {
-                if (audioElement && audioFileUrl) {
-                   audioElement.currentTime = 0;
-                   audioElement.play().catch(e => console.warn(e));
-                } else if (audioElement) {
-                   audioElement.play().catch(e => console.warn(e));
-                }
-                reset();
-             }} className="mb-4 px-8 py-3 sm:px-10 sm:py-4 bg-red-600 text-white text-xl sm:text-2xl font-bold rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(220,38,38,0.5)]">PLAY AGAIN</button>
+          <div className="m-auto pointer-events-auto relative overflow-hidden bg-black/60 text-white p-8 sm:p-14 rounded-[2.5rem] border border-white/10 flex flex-col items-center text-center backdrop-blur-3xl max-w-xl w-full mx-4 shadow-2xl">
+             <div className="absolute top-0 -left-1/2 w-full h-full bg-gradient-to-r from-red-600/20 to-red-900/20 blur-3xl opacity-50 rounded-full mix-blend-screen pointer-events-none"></div>
              
-             <button onClick={() => window.location.reload()} className="text-zinc-400 underline hover:text-white mt-4">Change Song</button>
+             <div className="relative z-10 flex flex-col items-center w-full">
+               <h1 className="text-5xl sm:text-7xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-red-500 to-red-800 tracking-tight leading-tight">
+                 TRACK ENDED
+               </h1>
+               
+               <div className="my-8 flex justify-center items-end gap-2">
+                 <p className="text-xl text-zinc-400 mb-2">Final Score</p>
+                 <span className="text-6xl font-black text-white">{score}</span>
+               </div>
+               
+               <button onClick={() => {
+                  if (audioElement && audioFileUrl) {
+                     audioElement.currentTime = 0;
+                     audioElement.play().catch(e => console.warn(e));
+                  } else if (audioElement) {
+                     audioElement.play().catch(e => console.warn(e));
+                  }
+                  reset();
+               }} className="group relative w-full sm:w-auto px-10 py-4 bg-white text-black text-lg font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.5)] overflow-hidden mb-6">
+                 <span className="relative flex items-center justify-center gap-2">
+                   PLAY AGAIN <Play className="w-5 h-5 fill-current" />
+                 </span>
+               </button>
+               
+               <button onClick={() => window.location.reload()} className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 mt-2">
+                 <Disc className="w-4 h-4" /> Change Track
+               </button>
+             </div>
           </div>
        )}
     </div>

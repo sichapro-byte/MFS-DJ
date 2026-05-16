@@ -1,5 +1,5 @@
 {
-  "name": "Voxel Turntable",
+  "name": "MFS DJ",
   "description": "A 3D turntable made of colorful voxels, featuring an animated spinning record and auto-rotated camera via Three.js and React Three Fiber.",
   "requestFramePermissions": [],
   "majorCapabilities": [
